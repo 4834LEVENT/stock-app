@@ -2,19 +2,22 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { Form } from "formik";
-import { object, string } from "yup";
 
-export const registerSchema = object({
-  username: string()
+import * as Yup from "yup";
+
+export const registerSchema = Yup.object({
+  username: Yup.string()
     .max(10, "Kullanıcı adı 10 karakterden az olmalıdır.")
     .required(),
-  first_name: string().max(20, "İsim 20 karakterden az olmalıdır.").required(),
-  last_name: string()
+  first_name: Yup.string()
+    .max(20, "İsim 20 karakterden az olmalıdır.")
+    .required(),
+  last_name: Yup.string()
     .max(20, "Soyisim 30 karakterden az olmalıdır.")
     .required(),
 
-  email: string().email().required(),
-  password: string()
+  email: Yup.string().email().required(),
+  password: Yup.string()
     .required("password zorunludur")
     .min(8, "password en az 8 karakter olmalıdır")
     .max(20, "password en fazla 20 karakter olmalıdır")
@@ -22,6 +25,11 @@ export const registerSchema = object({
     .matches(/[a-z]/, "Password bir küçük harf içermelidir")
     .matches(/[A-Z]/, "Password bir büyük harf içermelidir")
     .matches(/[!,?{}><%&$#£+-.]+/, "Password bir özel karakter içermelidir"),
+
+  passwordConfirmation: Yup.string().oneOf(
+    [Yup.ref("password"), null],
+    "Passwords must match"
+  ),
 });
 
 const SignUpForm = ({ values, handleChange, errors, touched, handleBlur }) => {
@@ -88,6 +96,23 @@ const SignUpForm = ({ values, handleChange, errors, touched, handleBlur }) => {
             onBlur={handleBlur}
             helperText={touched.password && errors.password}
             error={touched.password && Boolean(errors.password)}
+          />
+          <TextField
+            label="password"
+            name="passwordConfirmation"
+            id="passwordConfirmation"
+            type="password"
+            variant="outlined"
+            value={values.passwordConfirmation}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            helperText={
+              touched.passwordConfirmation && errors.passwordConfirmation
+            }
+            error={
+              touched.passwordConfirmation &&
+              Boolean(errors.passwordConfirmation)
+            }
           />
           <Button type="submit" variant="contained" size="large">
             Submit

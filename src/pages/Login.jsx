@@ -6,29 +6,12 @@ import Typography from "@mui/material/Typography";
 import LockIcon from "@mui/icons-material/Lock";
 import image from "../assets/result.svg";
 import { Link } from "react-router-dom";
-
-import { useSelector } from "react-redux";
-import { Formik, Form } from "formik";
-import TextField from "@mui/material/TextField";
-import { object, string } from "yup";
-import LoadingButton from "@mui/lab/LoadingButton";
+import { Formik } from "formik";
 import useAuthCall from "../hooks/useAuthCall";
+import LoginForm, { loginScheme } from "../components/LoginForm";
+
 const Login = () => {
-  const { currentUser, error, loading } = useSelector((state) => state?.auth);
   const { login } = useAuthCall();
-  const loginScheme = object({
-    email: string()
-      .email("Please enter correct  validetion ")
-      .required("This field is required"),
-    password: string()
-      .required("password is required")
-      .min(8, "it must be minumum 8 character")
-      .max(20, "it must be maximum 20 character")
-      .matches(/\d+/, "Password includes a number")
-      .matches(/[A-Z]/, "Password uppercase letter")
-      .matches(/[a-z]/, "Password lowercase letter")
-      .matches(/[@#$%^&*()-_+={};|/:.]/, "Please enter a specials characters"),
-  });
 
   return (
     <Container maxWidth="lg">
@@ -74,45 +57,8 @@ const Login = () => {
               actions.resetForm();
               actions.setSubmitting(false);
             }}
-          >
-            {({ values, errors, touched, handleChange, handleBlur }) => (
-              <Form>
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  <TextField
-                    label="Email"
-                    name="email"
-                    id="email"
-                    variant="outlined"
-                    type="email"
-                    value={values?.email || ""}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={touched.email && Boolean(errors.email)}
-                    helperText={touched.email && errors.email}
-                  />
-                  <TextField
-                    label="Password"
-                    name="password"
-                    id="password"
-                    variant="outlined"
-                    type="password"
-                    value={values?.password || ""}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={touched.password && Boolean(errors.password)}
-                    helperText={touched.password && errors.password}
-                  />
-                  <LoadingButton
-                    type="submit"
-                    variant="contained"
-                    loading={loading}
-                  >
-                    Submit
-                  </LoadingButton>
-                </Box>
-              </Form>
-            )}
-          </Formik>
+            component={(props) => <LoginForm {...props} />}
+          ></Formik>
           <Box sx={{ textAlign: "center", mt: 2 }}>
             <Link to="/register">Do you have not an account?</Link>
           </Box>

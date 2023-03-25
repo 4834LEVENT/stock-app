@@ -59,10 +59,11 @@ const Register = () => {
               last_name: "",
               email: "",
               password: "",
+              passwordConfirmation: "",
             }}
             validationSchema={registerSchema}
             onSubmit={(values, actions) => {
-              register({ ...values, password2: values.password });
+              register({ ...values, password2: values.passwordConfirmation });
               actions.resetForm();
               actions.setSubmitting(false);
             }}
